@@ -1,0 +1,11 @@
+# Java
+/backend/build
+/backend/.gradle
+
+# Node
+/frontend/node_modules
+/frontend/dist
+
+# IntelliJ
+.idea
+*.iml

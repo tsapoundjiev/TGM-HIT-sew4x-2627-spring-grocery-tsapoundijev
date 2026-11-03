@@ -1,0 +1,8 @@
+{
+  "extends": "../tsconfig.node.json",
+  "compilerOptions": {
+    "lib": ["ES2024", "DOM"],
+    "types": ["cypress", "node"]
+  },
+  "include": ["**/*.ts"]
+}
