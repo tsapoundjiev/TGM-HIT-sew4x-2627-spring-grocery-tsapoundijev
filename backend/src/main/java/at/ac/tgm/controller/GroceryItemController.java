@@ -82,6 +82,29 @@ public class GroceryItemController implements GroceryItemApi {
     }
 
     /**
+     * F: Löscht alle Artikel (der Service löscht bei id == null alles).
+     *
+     * @return 200 OK
+     */
+    @Override
+    public ResponseEntity<Void> deleteAllGroceryItems() {
+        groceryService.deleteGroceryItem(null);
+        return ResponseEntity.ok().build();
+    }
+
+    /**
+     * F: Löscht den Artikel mit der angegebenen Id.
+     *
+     * @param id Id des zu löschenden Artikels
+     * @return 200 OK, 404 Not Found (über den Service) wenn die id nicht existiert
+     */
+    @Override
+    public ResponseEntity<Void> deleteGroceryItem(Long id) {
+        groceryService.deleteGroceryItem(id);
+        return ResponseEntity.ok().build();
+    }
+
+    /**
      * Korrigiert fehlerhafte, aber eindeutig behebbare Eingaben:
      * Name wird getrimmt, amount null oder 0 wird zu 1, negatives amount wird negiert,
      * collected null wird zu false.

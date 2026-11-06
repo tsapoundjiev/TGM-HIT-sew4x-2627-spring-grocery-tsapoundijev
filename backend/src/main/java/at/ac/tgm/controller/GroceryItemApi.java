@@ -11,6 +11,7 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -91,6 +92,30 @@ public interface GroceryItemApi {
     ResponseEntity<GroceryItemDto> patchGroceryItem(
             @Parameter(description = "Id des Artikels", example = "1") @PathVariable Long id,
             @Parameter(description = "Neuer Wert für collected", example = "true") @RequestParam boolean collected);
+
+    /**
+     * F: Alle Artikel löschen.
+     *
+     * @return 200
+     */
+    @Operation(summary = "[F] Alle Artikel löschen")
+    @ApiResponse(responseCode = "200", description = "Alle Artikel gelöscht", content = @Content)
+    @DeleteMapping
+    ResponseEntity<Void> deleteAllGroceryItems();
+
+    /**
+     * F: Einen Artikel löschen.
+     *
+     * @param id Id des zu löschenden Artikels
+     * @return 200 wenn gelöscht, 404 wenn die id nicht existiert
+     */
+    @Operation(summary = "[F] Artikel mit angegebener Id löschen")
+    @ApiResponse(responseCode = "200", description = "Artikel gelöscht", content = @Content)
+    @ApiResponse(responseCode = "404", description = "Kein Artikel mit dieser id vorhanden",
+            content = @Content(mediaType = MediaType.TEXT_PLAIN_VALUE))
+    @DeleteMapping("/{id}")
+    ResponseEntity<Void> deleteGroceryItem(
+            @Parameter(description = "Id des Artikels", example = "1") @PathVariable Long id);
 
     /**
      * E: Einen Artikel anhand seiner Id abfragen.
