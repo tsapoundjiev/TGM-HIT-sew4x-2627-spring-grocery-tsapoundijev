@@ -69,6 +69,19 @@ public class GroceryItemController implements GroceryItemApi {
     }
 
     /**
+     * C: Setzt nur das collected-Flag des Artikels.
+     *
+     * @param id        Id des Artikels
+     * @param collected Neuer collected-Wert
+     * @return 200 OK mit dem vollständigen aktualisierten Artikel,
+     * 404 Not Found (über den Service) wenn die id nicht existiert
+     */
+    @Override
+    public ResponseEntity<GroceryItemDto> patchGroceryItem(Long id, boolean collected) {
+        return ResponseEntity.ok(groceryService.patchGroceryItem(id, collected));
+    }
+
+    /**
      * Korrigiert fehlerhafte, aber eindeutig behebbare Eingaben:
      * Name wird getrimmt, amount null oder 0 wird zu 1, negatives amount wird negiert,
      * collected null wird zu false.

@@ -12,11 +12,13 @@ import jakarta.validation.Valid;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 
 import java.util.List;
 
@@ -71,6 +73,24 @@ public interface GroceryItemApi {
             content = @Content(mediaType = MediaType.TEXT_PLAIN_VALUE))
     @PutMapping
     ResponseEntity<GroceryItemDto> updateGroceryItem(@Valid @RequestBody GroceryItemDto groceryItemDto);
+
+    /**
+     * C: Nur das collected-Flag eines Artikels ändern.
+     *
+     * @param id        Id des Artikels
+     * @param collected Neuer Wert für collected
+     * @return 200 mit dem gesamten aktualisierten Artikel, 404 wenn die id nicht existiert
+     */
+    @Operation(summary = "[C] Artikel teilweise aktualisieren (collected)",
+            description = "Setzt ausschließlich das collected-Flag des Artikels mit der angegebenen id.")
+    @ApiResponse(responseCode = "200", description = "Artikel aktualisiert",
+            content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE, schema = @Schema(implementation = GroceryItemDto.class)))
+    @ApiResponse(responseCode = "404", description = "Kein Artikel mit dieser id vorhanden",
+            content = @Content(mediaType = MediaType.TEXT_PLAIN_VALUE))
+    @PatchMapping("/{id}")
+    ResponseEntity<GroceryItemDto> patchGroceryItem(
+            @Parameter(description = "Id des Artikels", example = "1") @PathVariable Long id,
+            @Parameter(description = "Neuer Wert für collected", example = "true") @RequestParam boolean collected);
 
     /**
      * E: Einen Artikel anhand seiner Id abfragen.
