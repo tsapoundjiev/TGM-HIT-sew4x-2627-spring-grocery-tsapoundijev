@@ -31,4 +31,16 @@ public class GroceryItemController implements GroceryItemApi {
         }
         return ResponseEntity.ok(items);
     }
+
+    /**
+     * E: Liefert den Artikel mit der angegebenen Id.
+     *
+     * @param id Id des gewünschten Artikels
+     * @return 200 OK mit dem Artikel, 404 Not Found wenn es keinen Artikel mit dieser Id gibt
+     */
+    @Override
+    public ResponseEntity<GroceryItemDto> getGroceryItem(Long id) {
+        // ResponseEntity.of: Optional mit Wert -> 200 + Body, leeres Optional -> 404 ohne Body
+        return ResponseEntity.of(groceryService.getGroceryItem(id));
+    }
 }
