@@ -5,7 +5,9 @@ import at.ac.tgm.service.GroceryService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
+import java.net.URI;
 import java.util.List;
 
 /**
@@ -30,6 +32,44 @@ public class GroceryItemController implements GroceryItemApi {
             return ResponseEntity.noContent().build();
         }
         return ResponseEntity.ok(items);
+    }
+
+    /**
+     * A: Legt einen neuen Artikel an. Die Daten werden vor dem Speichern korrigiert
+     * (siehe {@link #correct(GroceryItemDto)}).
+     *
+     * @param groceryItemDto Neuer Artikel (id muss null sein, name nicht leer und maximal 255 Zeichen)
+     * @return 201 Created mit Location-Header und dem erstellten Artikel,
+     * 400 Bad Request wenn id != null oder die Validierung fehlschlägt
+     */
+    @Override
+    public ResponseEntity<GroceryItemDto> addGroceryItem(GroceryItemDto groceryItemDto) {
+        if (groceryItemDto.getId() != null) {
+            throw new IllegalArgumentException("id muss beim Hinzufügen null sein");
+        }
+        GroceryItemDto created = groceryService.createGroceryItem(correct(groceryItemDto));
+        URI location = ServletUriComponentsBuilder.fromCurrentRequest()
+                .path("/{id}").buildAndExpand(created.getId()).toUri();
+        return ResponseEntity.created(location).body(created);
+    }
+
+    /**
+     * Korrigiert fehlerhafte, aber eindeutig behebbare Eingaben:
+     * Name wird getrimmt, amount null oder 0 wird zu 1, negatives amount wird negiert,
+     * collected null wird zu false.
+     */
+    private GroceryItemDto correct(GroceryItemDto dto) {
+        dto.setName(dto.getName().trim());
+        Integer amount = dto.getAmount();
+        if (amount == null || amount == 0) {
+            dto.setAmount(1);
+        } else if (amount < 0) {
+            dto.setAmount(-amount);
+        }
+        if (dto.getCollected() == null) {
+            dto.setCollected(false);
+        }
+        return dto;
     }
 
     /**

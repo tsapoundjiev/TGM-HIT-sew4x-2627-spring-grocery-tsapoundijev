@@ -8,10 +8,13 @@ import io.swagger.v3.oas.annotations.media.ExampleObject;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.validation.Valid;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 
 import java.util.List;
@@ -34,6 +37,22 @@ public interface GroceryItemApi {
     @ApiResponse(responseCode = "204", description = "Es existieren keine Artikel", content = @Content)
     @GetMapping
     ResponseEntity<List<GroceryItemDto>> getGroceryItems();
+
+    /**
+     * A: Neuen Artikel hinzufügen.
+     *
+     * @param groceryItemDto Neuer Artikel, die id muss {@code null} sein
+     * @return 201 mit dem erstellten Artikel, 400 bei ungültigen Daten
+     */
+    @Operation(summary = "[A] Artikel hinzufügen",
+            description = "Legt einen neuen Artikel an. Die id muss null sein und wird vom Server vergeben. "
+                    + "Name wird getrimmt, amount null/0 wird zu 1, negative amount wird negiert, collected null wird zu false.")
+    @ApiResponse(responseCode = "201", description = "Artikel erstellt",
+            content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE, schema = @Schema(implementation = GroceryItemDto.class)))
+    @ApiResponse(responseCode = "400", description = "Ungültige Daten (id != null, Name leer oder länger als 255 Zeichen)",
+            content = @Content(mediaType = MediaType.TEXT_PLAIN_VALUE))
+    @PostMapping
+    ResponseEntity<GroceryItemDto> addGroceryItem(@Valid @RequestBody GroceryItemDto groceryItemDto);
 
     /**
      * E: Einen Artikel anhand seiner Id abfragen.

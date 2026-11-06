@@ -34,6 +34,14 @@ public class GlobalExceptionHandler {
         return new ResponseEntity<>(body, headers, HttpStatus.BAD_REQUEST);
     }
     
+    /**
+     * Ungültige Anfrage, z.B. id != null bei POST bzw. id == null bei PUT.
+     */
+    @ExceptionHandler(IllegalArgumentException.class)
+    public ResponseEntity<String> handler(IllegalArgumentException e) {
+        return new ResponseEntity<>(e.getMessage(), headers, HttpStatus.BAD_REQUEST);
+    }
+
     @ExceptionHandler(NoSuchElementException.class)
     public ResponseEntity<String> handler(NoSuchElementException e) {
         String body = e.getMessage();
