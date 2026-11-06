@@ -14,6 +14,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 
@@ -53,6 +54,23 @@ public interface GroceryItemApi {
             content = @Content(mediaType = MediaType.TEXT_PLAIN_VALUE))
     @PostMapping
     ResponseEntity<GroceryItemDto> addGroceryItem(@Valid @RequestBody GroceryItemDto groceryItemDto);
+
+    /**
+     * B: Bestehenden Artikel aktualisieren.
+     *
+     * @param groceryItemDto Zu aktualisierender Artikel, die id muss gesetzt sein
+     * @return 200 mit dem aktualisierten Artikel, 400 bei ungültigen Daten, 404 wenn die id nicht existiert
+     */
+    @Operation(summary = "[B] Artikel aktualisieren",
+            description = "Ersetzt den Artikel mit der angegebenen id. Es gelten dieselben Korrekturen wie beim Hinzufügen.")
+    @ApiResponse(responseCode = "200", description = "Artikel aktualisiert",
+            content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE, schema = @Schema(implementation = GroceryItemDto.class)))
+    @ApiResponse(responseCode = "400", description = "Ungültige Daten (id == null, Name leer oder länger als 255 Zeichen)",
+            content = @Content(mediaType = MediaType.TEXT_PLAIN_VALUE))
+    @ApiResponse(responseCode = "404", description = "Kein Artikel mit dieser id vorhanden",
+            content = @Content(mediaType = MediaType.TEXT_PLAIN_VALUE))
+    @PutMapping
+    ResponseEntity<GroceryItemDto> updateGroceryItem(@Valid @RequestBody GroceryItemDto groceryItemDto);
 
     /**
      * E: Einen Artikel anhand seiner Id abfragen.

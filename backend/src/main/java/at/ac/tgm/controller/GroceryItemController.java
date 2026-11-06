@@ -54,6 +54,21 @@ public class GroceryItemController implements GroceryItemApi {
     }
 
     /**
+     * B: Aktualisiert einen bestehenden Artikel. Die Daten werden wie bei A korrigiert.
+     *
+     * @param groceryItemDto Zu aktualisierender Artikel (id darf nicht null sein)
+     * @return 200 OK mit dem aktualisierten Artikel, 400 Bad Request wenn id == null oder die Validierung
+     * fehlschlägt, 404 Not Found (über den Service) wenn die id nicht existiert
+     */
+    @Override
+    public ResponseEntity<GroceryItemDto> updateGroceryItem(GroceryItemDto groceryItemDto) {
+        if (groceryItemDto.getId() == null) {
+            throw new IllegalArgumentException("id darf beim Aktualisieren nicht null sein");
+        }
+        return ResponseEntity.ok(groceryService.updateGroceryItem(correct(groceryItemDto)));
+    }
+
+    /**
      * Korrigiert fehlerhafte, aber eindeutig behebbare Eingaben:
      * Name wird getrimmt, amount null oder 0 wird zu 1, negatives amount wird negiert,
      * collected null wird zu false.
